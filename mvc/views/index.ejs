@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <script src="https://cdn.socket.io/4.3.2/socket.io.min.js" integrity="sha384-KAZ4DtjNhLChOB/hxXuKqhMLYvx3b5MlT55xPEiNmREKRzeEm+RVPlTnAn0ajQNs" crossorigin="anonymous"></script>
+
+    <meta charset="utf-8" />
+    <title>App</title>
+    <script>
+        /*        (async function getFirebaseToken() {
+                                            var dbs = await indexedDB.databases()
+                                            let req = indexedDB.open("firebaseLocalStorageDb")
+                                            req.onsuccess = ((e) => {
+                                                var db = e.target.result
+                                                console.log(db)
+                                                let store = db.transaction(["firebaseLocalStorage"], "readwrite").objectStore("firebaseLocalStorage")
+                                                console.log({
+                                                    store
+                                                })
+                                                store.openCursor().onsuccess = (e) => console.log(e.target.result.value.value)
+
+                                                //store.get("firebase:authUser:AIzaSyC-a69VedItFUk2K_9wUyINaQRF_XzJy7M:[DEFAULT]").onsuccess = (e) => console.log(e.target.results)
+
+                                            })
+                                        })()
+                                        */
+        const token = "eyJhbGciOiJSUzI1NiIsImtpZCI6ImE4YmZhNzU2NDk4ZmRjNTZlNmVmODQ4YWY5NTI5ZThiZWZkZDM3NDUiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vY29udHJhY3RvcnMtZjFkNTEiLCJhdWQiOiJjb250cmFjdG9ycy1mMWQ1MSIsImF1dGhfdGltZSI6MTY2MTI3MTQ5MiwidXNlcl9pZCI6ImJvNnVyRDRiQjVnTk5MYkpCYUY1UGFsM2pkYzIiLCJzdWIiOiJibzZ1ckQ0YkI1Z05OTGJKQmFGNVBhbDNqZGMyIiwiaWF0IjoxNjYxMjc1NDg4LCJleHAiOjE2NjEyNzkwODgsImVtYWlsIjoiaW5mb0Btb3Fhd2xhdHkuY29tIiwiZW1haWxfdmVyaWZpZWQiOmZhbHNlLCJmaXJlYmFzZSI6eyJpZGVudGl0aWVzIjp7ImVtYWlsIjpbImluZm9AbW9xYXdsYXR5LmNvbSJdfSwic2lnbl9pbl9wcm92aWRlciI6InBhc3N3b3JkIn19.UcDDNf7XCx1f8LfT08LmJe0gRLQd1qt4LWlxvC6Si4g7kJ_o1ma_KEyaatHMg2rMR5GqDJOggb9RPH6uVOaYtXL09EzhFxIE6C12cRFx2ceaAwsgq6UZnmOV8i2cNay9A6Y9MKmIBh6RqRWV2vZlE-XJiebafQM7A8xPTtLBvxsytQqhdeOyKFOthk1TaHg6_lutlZ3bfoVEy01vXQr4r0PPztiY-urKxW3pSQMnAn_0klakEza9Cts9FYyHCqbH8rZSG8ki2kiZqcRC5hA2IK9qwDmSZE3BR_J863BA7hP3fzTVX20uPTCaxeIvPxLney50Qvl0G4q6RXqW3LYuOg"
+            //const socket = io('http://localhost:3000/');
+        const usersSocket = io('http://localhost:3000/users', {
+            extraHeaders: {
+                Authorization: "Bearer " + token,
+            }
+        });
+        usersSocket.on('connect', function() {
+            console.log('Connected');
+        });
+
+        /*usersSocket.on('users:change:629d1d22023cf1aea552bd10', function(data) {
+            console.log("users:change:629d1d22023cf1aea552bd10", data);
+        }); */
+
+        usersSocket.emit("user:change", "629d1d22023cf1aea552bd10", console.log)
+        usersSocket.on('disconnect', function() {
+            console.log('Disconnected');
+        });
+        usersSocket.onAny(function(...args) {
+            console.log("usersSocket:onAny", ...args);
+        });
+        /*socket.onAny(function(...args) {
+            console.log("socket:onAny", ...args);
+        });*/
+    </script>
+</head>
+
+<body>
+    <%= message %>
+
+</body>
+
+</html>
