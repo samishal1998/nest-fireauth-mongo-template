@@ -6,6 +6,7 @@ import {
 } from 'passport-firebase-jwt';
 import * as firebase from 'firebase-admin';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { FirebaseService } from 'src/firebase/firebase.service';
 
 @Injectable()
 export class FirebaseAuthStrategy extends PassportStrategy(
@@ -13,7 +14,10 @@ export class FirebaseAuthStrategy extends PassportStrategy(
 ) {
 	private defaultApp: firebase.app.App;
 
-	constructor(private prisma: PrismaService) {
+	constructor(
+		private prisma: PrismaService,
+		private firebase: FirebaseService,
+	) {
 		super({
 			jwtFromRequest: (request) => {
 				return (
@@ -22,19 +26,10 @@ export class FirebaseAuthStrategy extends PassportStrategy(
 				//ExtractJwt.fromAuthHeaderAsBearerToken
 			},
 		});
-		this.defaultApp = firebase.initializeApp({
-			credential: firebase.credential.cert(
-				JSON.parse(
-					Buffer.from(process.env.SERVICE_ACCOUNT, 'base64').toString(
-						'utf-8',
-					),
-				),
-			),
-		});
 	}
 
 	async validate(token: string) {
-		const firebaseUser: any = await this.defaultApp
+		const firebaseUser: any = await this.firebase.defaultApp
 			.auth()
 			.verifyIdToken(token, true)
 			.catch((err) => {

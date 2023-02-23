@@ -1,13 +1,13 @@
-import { EventsModule } from './events/events.module';
-import { ProductsModule } from './products/products.module';
 import { Module } from '@nestjs/common';
+import { MongooseModule } from '@nestjs/mongoose';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { UsersModule } from './users/users.module';
-import { PrismaModule } from './prisma/prisma.module';
 import { AuthModule } from './auth/auth.module';
-import { MainGateway } from './main.gateway';
-import { MongooseModule } from '@nestjs/mongoose';
+import { FirebaseModule } from './firebase/firebase.module';
+import { PrismaModule } from './prisma/prisma.module';
+import { EventsModule } from './resources/events/events.module';
+import { ProductsModule } from './resources/products/products.module';
+import { UsersModule } from './resources/users/users.module';
 
 @Module({
 	imports: [
@@ -16,10 +16,11 @@ import { MongooseModule } from '@nestjs/mongoose';
 		UsersModule,
 		PrismaModule,
 		AuthModule,
+		FirebaseModule,
 		MongooseModule.forRoot(process.env.DATABASE_URL),
 	],
 	controllers: [AppController],
-	providers: [AppService, MainGateway],
+	providers: [AppService],
 	exports: [],
 })
 export class AppModule {}

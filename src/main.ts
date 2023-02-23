@@ -1,22 +1,28 @@
 import { HttpAdapterHost, NestFactory } from '@nestjs/core';
-import { AppModule } from './app.module';
-import { PrismaService } from './prisma/prisma.service';
+import { NestExpressApplication } from '@nestjs/platform-express';
 import {
-	SwaggerModule,
 	DocumentBuilder,
-	SwaggerDocumentOptions,
 	SwaggerCustomOptions,
+	SwaggerDocumentOptions,
+	SwaggerModule,
 } from '@nestjs/swagger';
 import { writeFileSync } from 'fs';
-import { join } from 'path';
-import { NestExpressApplication } from '@nestjs/platform-express';
 import { PrismaClientExceptionFilter } from 'nestjs-prisma';
+import { join } from 'path';
+import { AppModule } from './app.module';
+import { PrismaService } from './prisma/prisma.service';
+import { VERSION_NEUTRAL, VersioningType } from '@nestjs/common';
 
 const OPENAPI_SPEC_FILENAME = 'knot_open_api_spec.json';
 async function bootstrap() {
 	const app = await NestFactory.create<NestExpressApplication>(AppModule, {
 		cors: { origin: '*' },
 	});
+	app.enableVersioning({
+		type: VersioningType.URI,
+		defaultVersion: VERSION_NEUTRAL,
+	});
+
 	const prismaService = app.get(PrismaService);
 	await prismaService.enableShutdownHooks(app);
 	const { httpAdapter } = app.get(HttpAdapterHost);

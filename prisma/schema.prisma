@@ -14,19 +14,21 @@ type ControlledValue {
 }
 
 type WorkInfo {
-  companyName   String?
-  position  String?
+  companyName String?
+  position    String?
   companyUrl  String?
 }
 
 model User {
-  id          String   @id @default(auto()) @map("_id") @db.ObjectId
-  createdAt   DateTime @default(now())
-  firebaseUID String   @unique
-  fullName    String
-  username    String? //@unique
-  title       String?
-  bio         String?
+  id              String   @id @default(auto()) @map("_id") @db.ObjectId
+  createdAt       DateTime @default(now())
+  firebaseUID     String   @unique
+  fullName        String
+  username        String   @unique
+  title           String?
+  bio             String?
+  userAccentColor String?
+  fcmTokens       String[]
 
   primaryEmailEnabled Boolean @default(true)
   primaryEmail        String? @unique
@@ -39,22 +41,32 @@ model User {
 
   userType UserType @default(USER)
 
-  birthday             DateTime?
+  birthday DateTime?
 
-  workInfo  WorkInfo?
-  
+  workInfo WorkInfo?
+
   connectionsReceived  Connection[] @relation("connectionsReceived")
   connectionsInitiated Connection[] @relation("connectionsInitiated")
+  connectionsBlocked   Connection[] @relation("connectionsBlocked")
 
   products Product[] //defined
 
+  links Json?
+  linksCategories Json?
+  
   apps       Json?
   customApps Json?
 
   tags Json? //Tag[]
 
-  eventsCreated  Event[]           @relation("eventsCreated")
-  attendedEvents EventAttendance[]
+  eventOrganizerId String?         @unique @db.ObjectId //TODO Carefull when building
+  eventOrganizer   EventOrganizer? @relation(fields: [eventOrganizerId], references: [id])
+
+  attendedEvents          EventAttendance[]
+  reportsAgainst          UserFlagReport[]  @relation("reportedUser")
+  reportsSent             UserFlagReport[]  @relation("reportingUser")
+  // userDataObjectVersion   String?           @default("v1")
+  documentVersion String?           @default("v1")
 
   @@map("users")
 }
@@ -74,6 +86,9 @@ model Connection {
   receivedByID String @db.ObjectId
   receivedBy   User   @relation("connectionsReceived", fields: [receivedByID], references: [id])
 
+  blockerID String? @db.ObjectId
+  blocker   User?   @relation("connectionsBlocked", fields: [blockerID], references: [id])
+
   //@@id([intiatedByID, recievedByID])
   @@map("connections")
 }
@@ -81,6 +96,7 @@ model Connection {
 model Product {
   id        String      @id @default(auto()) @map("_id") @db.ObjectId
   uuid      String      @unique
+  qrUuid    String      @unique
   type      ProductType
   activated Boolean     @default(false)
   ownerID   String?     @db.ObjectId
@@ -93,12 +109,19 @@ model Event {
   id          String            @id @default(auto()) @map("_id") @db.ObjectId
   //attending User[] @relation(fields: [id], references: [id])
   date        DateTime?
-  description String
+  duration    Int? // in seconds
+  description String?
   name        String
   activated   Boolean           @default(false)
-  creatorID   String            @db.ObjectId
-  creator     User              @relation("eventsCreated", fields: [creatorID], references: [id])
+  creatorID   String?           @db.ObjectId
+  creator     EventOrganizer?   @relation("eventsCreated", fields: [creatorID], references: [id])
   attendees   EventAttendance[]
+  isFeatured  Boolean           @default(false)
+  category    String?
+  tags        String[]
+  eventUrl    String?
+  location    GeoPoint?
+  address     String?
 
   @@map("events")
 }
@@ -118,28 +141,45 @@ model EventAttendance {
   @@map("event-attendance")
 }
 
-// model  EventOrganizer {
-//   id          String   @id @default(auto()) @map("_id") @db.ObjectId
-//   createdAt   DateTime @default(now())
-  
-//   userId      String?
+model EventOrganizer {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  createdAt DateTime @default(now())
 
+  user User?
 
-//   fullName    String
-//   title       String?
-//   bio         String?
+  fullName String
 
-//   eventsCreated  Event[]           @relation("eventsCreated")
+  eventsCreated Event[] @relation("eventsCreated")
 
+  @@map("event-organizer")
+}
 
-//   @@map("event-organizer")
-// }
+model UserFlagReport {
+  id          String @id @default(auto()) @map("_id") @db.ObjectId
+  title       String
+  description String
+
+  reportingUserId String @db.ObjectId
+  reportingUser   User   @relation("reportingUser", fields: [reportingUserId], references: [id])
+
+  reportedUserId String @db.ObjectId
+  reportedUser   User   @relation("reportedUser", fields: [reportedUserId], references: [id])
+
+  state FlagReportState @default(PENDING)
+
+  @@map("user-flag-reports")
+}
 
 enum UserType {
   USER
   ADMIN
   CUSTOMER_SERVICE
   EVENT_ORGANIZER
+}
+
+enum FlagReportState {
+  PENDING
+  RESOLVED
 }
 
 enum ProductType {
@@ -151,4 +191,9 @@ enum ProductType {
 type Tag {
   name String
   ids  String[] @db.ObjectId
+}
+
+type GeoPoint {
+  lat Float
+  lng Float
 }
