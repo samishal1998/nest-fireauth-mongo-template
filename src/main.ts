@@ -1,4 +1,4 @@
-import { NestFactory } from '@nestjs/core';
+import { HttpAdapterHost, NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { PrismaService } from './prisma/prisma.service';
 import {
@@ -10,14 +10,19 @@ import {
 import { writeFileSync } from 'fs';
 import { join } from 'path';
 import { NestExpressApplication } from '@nestjs/platform-express';
+import { PrismaClientExceptionFilter } from 'nestjs-prisma';
 
+const OPENAPI_SPEC_FILENAME = 'knot_open_api_spec.json';
 async function bootstrap() {
 	const app = await NestFactory.create<NestExpressApplication>(AppModule, {
 		cors: { origin: '*' },
 	});
 	const prismaService = app.get(PrismaService);
 	await prismaService.enableShutdownHooks(app);
-	openApi(app);
+	const { httpAdapter } = app.get(HttpAdapterHost);
+	app.useGlobalFilters(new PrismaClientExceptionFilter(httpAdapter));
+	if (process.env.NODE_ENV != 'production') openApi(app);
+
 	mvc(app);
 
 	await app.listen(3000);
@@ -47,10 +52,11 @@ function openApi(app: NestExpressApplication) {
 	const document = SwaggerModule.createDocument(app, config, options);
 	if (process.env.dev) {
 		console.log(
-			'Swagger:: writing to file: ' + join(process.cwd(), 'docs.json'),
+			'Swagger:: writing to file: ' +
+				join(process.cwd(), OPENAPI_SPEC_FILENAME),
 		);
 		writeFileSync(
-			join(process.cwd(), 'docs.json'),
+			join(process.cwd(), OPENAPI_SPEC_FILENAME),
 			JSON.stringify(
 				document,
 				// (key, value) => {

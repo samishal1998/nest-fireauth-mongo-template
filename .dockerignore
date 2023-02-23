@@ -39,3 +39,7 @@ lerna-debug.log*
 
 *.lock
 knot_open_api_spec.json
+
+Dockerfile
+.dockerignore
+.eslintrc.js

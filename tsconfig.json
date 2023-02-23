@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "strict": false,
     "module": "commonjs",
     "declaration": true,
     "removeComments": true,
@@ -9,7 +10,7 @@
     "target": "es2017",
     "sourceMap": true,
     "outDir": "./dist",
-    "baseUrl": "./",
+    "baseUrl": ".",
     "incremental": true,
     "skipLibCheck": true,
     "strictNullChecks": false,
@@ -17,6 +18,8 @@
     "strictBindCallApply": false,
     "forceConsistentCasingInFileNames": false,
     "noFallthroughCasesInSwitch": false,
-    "resolveJsonModule": true
+    "resolveJsonModule": true,
+    "declarationMap": true,
+    "preserveSymlinks": true,
   }
 }

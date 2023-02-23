@@ -1,3 +1,5 @@
+import { EventsModule } from './events/events.module';
+import { ProductsModule } from './products/products.module';
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -9,6 +11,8 @@ import { MongooseModule } from '@nestjs/mongoose';
 
 @Module({
 	imports: [
+		EventsModule,
+		ProductsModule,
 		UsersModule,
 		PrismaModule,
 		AuthModule,

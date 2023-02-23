@@ -1,7 +1,7 @@
 ---
-to: src/<%=name%>/<%=name%>.service.ts
+to: src/<%=names%>/<%=names%>.service.ts
 ---
-<% Name = h.capitalize(name) %>
+
 import { Injectable, Inject } from '@nestjs/common';
 import { InjectConnection } from '@nestjs/mongoose';
 import { Prisma } from '@prisma/client';
@@ -12,7 +12,7 @@ import { Update<%=Name%>Dto } from './dto/update-<%=name%>.dto';
 import { ObjectId } from 'mongodb';
 
 @Injectable()
-export class <%=Name%>Service {
+export class <%=Names%>Service {
 	@Inject()
 	private prisma: PrismaService;
 

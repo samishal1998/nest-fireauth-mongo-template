@@ -2,6 +2,7 @@
 inject: true
 to: src/app.module.ts
 after: 	imports
-skip_if: <%=h.capitalize(name)%>Module
+skip_if: <%=Names%>Module
 ---
-    <%=h.capitalize(name)%>Module,
+
+    <%=Names%>Module,

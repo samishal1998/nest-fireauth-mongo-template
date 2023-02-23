@@ -1,7 +1,7 @@
 ---
-to: "<%= Boolean(websocket) ? `src/${name}/${name}.gateway.ts` : null %>"
+to: "<%= Boolean(websocket) ? `src/${names}/${names}.gateway.ts` : null %>"
 ---
-<% Name = h.capitalize(name) %>
+
 import { OnModuleDestroy, UseGuards } from '@nestjs/common';
 import { InjectConnection } from '@nestjs/mongoose';
 import {
@@ -26,9 +26,9 @@ import { Connection } from 'mongoose';
 	cors: {
 		origin: '*',
 	},
-	namespace: '<%=name%>s',
+	namespace: '<%=names%>',
 })
-export class <%=Name%>Gateway implements OnGatewayDisconnect, OnGatewayInit {
+export class <%=Names%>Gateway implements OnGatewayDisconnect, OnGatewayInit {
 	@WebSocketServer()
 	server: Server;
 	private changeStream: ChangeStream;
@@ -36,19 +36,19 @@ export class <%=Name%>Gateway implements OnGatewayDisconnect, OnGatewayInit {
 
 	async afterInit(server: Server) {
 		this.changeStream = this.connection
-			.collection('<%=name%>s')
+			.collection('<%=names%>')
 			.watch([], { fullDocument: 'updateLookup' });
 
 		this.changeStream?.addListener('change', (change: any) => {
 			//of namespace not required
-			// this.server.of('<%=name%>s').in(`<%=name%>s:change:${change.documentKey._id.toString()}`).emit('change',change)
-			console.log('<%=name%>s:change', {
+			// this.server.of('<%=names%>').in(`<%=names%>:change:${change.documentKey._id.toString()}`).emit('change',change)
+			console.log('<%=names%>:change', {
 				change,
 			});
 			this.server
-				.in(`<%=name%>s:change:${change.documentKey._id.toString()}`)
+				.in(`<%=names%>:change:${change.documentKey._id.toString()}`)
 				.emit(
-					`<%=name%>s:change:${change.documentKey._id.toString()}`,
+					`<%=names%>:change:${change.documentKey._id.toString()}`,
 					change,
 				);
 		});
@@ -79,10 +79,10 @@ export class <%=Name%>Gateway implements OnGatewayDisconnect, OnGatewayInit {
 			};
 		} catch (error) {
 			return {
-				event: `join:room(<%=name%>s:change:${data})`,
+				event: `join:room(<%=names%>:change:${data})`,
 				data: {
 					success: false,
-					message: `failed to join room <%=name%>s:change:${data}`,
+					message: `failed to join room <%=names%>:change:${data}`,
 				},
 			};
 		}

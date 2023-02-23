@@ -1,7 +1,3 @@
----
-to: src/<%=names%>/dto/create-<%=name%>.dto.ts
----
-
 import { Options } from '@nestjs/common';
 import {
 	ApiExtraModels,
@@ -16,7 +12,7 @@ import {
 } from 'src/prisma/types';
 
 
-export class Create<%=Name%>Dto implements Partial<Prisma.<%=Name%>CreateInput> {
+export class CreateEventDto implements Partial<Prisma.EventCreateInput> {
 	@OptionalApiProperty({})
 	id?: string;
 
@@ -24,7 +20,7 @@ export class Create<%=Name%>Dto implements Partial<Prisma.<%=Name%>CreateInput> 
 	createdAt?: string | Date;
 
 
-	@ApiProperty({ enum: <%=Name%>Type })
-	<%=name%>Type: <%=Name%>Type;
+	@ApiProperty({ enum: EventType })
+	eventType: EventType;
 
 }

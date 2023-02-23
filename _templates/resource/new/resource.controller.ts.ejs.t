@@ -1,7 +1,7 @@
 ---
-to: src/<%=name%>/<%=name%>.controller.ts
+to: src/<%=names%>/<%=names%>.controller.ts
 ---
-<% Name = h.capitalize(name) %>
+
 import {
 	Controller,
 	Get,
@@ -15,7 +15,7 @@ import {
 	UseInterceptors,
 	UploadedFile,
 } from '@nestjs/common';
-import { <%=Name%>Service } from './<%=name%>.service';
+import { <%=Names%>Service } from './<%=names%>.service';
 import { Create<%=Name%>Dto } from './dto/create-<%=name%>.dto';
 import { Update<%=Name%>Dto } from './dto/update-<%=name%>.dto';
 import { FirebaseAuthGuard } from 'src/auth/guards/firebase-auth.guard';
@@ -29,15 +29,15 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { InjectConnection } from '@nestjs/mongoose';
 import { Connection } from 'mongoose';
 
-@ApiTags('<%=name%>')
-@Controller('<%=name%>')
-export class <%=Name%>Controller {
+@ApiTags('<%=names%>')
+@Controller('<%=names%>')
+export class <%=Names%>Controller {
 	constructor(
-		private readonly <%=name%>Service: <%=Name%>Service	) {}
+		private readonly <%=names%>Service: <%=Names%>Service	) {}
 
 	@Post()
 	create(@Body() create<%=Name%>Dto: Create<%=Name%>Dto) {
-		return this.<%=name%>Service.create(create<%=Name%>Dto);
+		return this.<%=names%>Service.create(create<%=Name%>Dto);
 	}
 
 
@@ -45,22 +45,22 @@ export class <%=Name%>Controller {
 	@Auth(UserType.CUSTOMER)
 	findAll(@Req() request: Request & { <%=name%>: any }) {
 		console.log({ <%=name%>: request.<%=name%> });
-		return this.<%=name%>Service.findAll();
+		return this.<%=names%>Service.findAll();
 	}
 
 	@Get(':id')
 	findOne(@Param('id') id: string) {
-		return this.<%=name%>Service.findOne(id);
+		return this.<%=names%>Service.findOne(id);
 	}
 
 
 	@Patch(':id')
 	update(@Param('id') id: string, @Body() update<%=Name%>Dto: Update<%=Name%>Dto) {
-		return this.<%=name%>Service.update(id, update<%=Name%>Dto);
+		return this.<%=names%>Service.update(id, update<%=Name%>Dto);
 	}
 
 	@Delete(':id')
 	remove(@Param('id') id: string) {
-		return this.<%=name%>Service.remove(id);
+		return this.<%=names%>Service.remove(id);
 	}
 }

@@ -6,11 +6,6 @@ import {
 } from '@nestjs/swagger';
 import { Prisma, UserType } from '@prisma/client';
 import { OptionalApiProperty } from 'src/openapi/decorators';
-import {
-	PrismaGenericConnect,
-	PrismaGenericConnectMany,
-} from 'src/prisma/types';
-
 
 export class CreateUserDto implements Partial<Prisma.UserCreateInput> {
 	@OptionalApiProperty({})
@@ -19,36 +14,25 @@ export class CreateUserDto implements Partial<Prisma.UserCreateInput> {
 	@OptionalApiProperty({ type: Date })
 	createdAt?: string | Date;
 
-	@OptionalApiProperty()
-	email?: string;
-
-	@OptionalApiProperty()
-	phone?: string;
-
-	@OptionalApiProperty()
-	firstName?: string;
-
-	@OptionalApiProperty()
-	lastName?: string;
-
 	@ApiProperty()
 	firebaseUID: string;
 
-	@OptionalApiProperty()
-	profileImage?: string;
+	@OptionalApiProperty({})
+	email?: string;
 
-	@OptionalApiProperty()
-	languageCode?: string;
+	@OptionalApiProperty({})
+	phone?: string;
 
-	@OptionalApiProperty()
-	countryCode?: string;
+	@OptionalApiProperty({})
+	fullName?: string;
 
-	@ApiProperty({ enum: UserType })
-	userType: UserType;
+	@OptionalApiProperty({ enum: UserType })
+	userType?: UserType;
 
 	@OptionalApiProperty({ type: Date })
 	birthday?: string | Date;
 }
+
 export class CreateUserWithImageDto {
 	@OptionalApiProperty({})
 	id?: string;

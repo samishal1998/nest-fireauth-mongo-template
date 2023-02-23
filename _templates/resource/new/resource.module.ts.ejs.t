@@ -1,14 +1,15 @@
 ---
-to: src/<%=name%>/<%=name%>.module.ts
+to: src/<%=names%>/<%=names%>.module.ts
 ---
-<% Name = h.capitalize(name) %>
+
+
 import { Module } from '@nestjs/common';
-import { <%=Name%>Service } from './<%=name%>.service';
-import { <%=Name%>Controller } from './<%=name%>.controller';
-<%= websocket ? `import { ${Name}Gateway } from './${name}.gateway';` : null %>
+import { <%=Names%>Service } from './<%=names%>.service';
+import { <%=Names%>Controller } from './<%=names%>.controller';
+<%= websocket ? `import { ${Names}Gateway } from './${names}.gateway';` : null %>
 
 @Module({
-	controllers: [<%=Name%>Controller],
-	providers: [<%=Name%>Service<%= Boolean(websocket) ? `, ${Name}Gateway` : null %>],
+	controllers: [<%=Names%>Controller],
+	providers: [<%=Names%>Service<%= Boolean(websocket) ? `, ${Names}Gateway` : null %>],
 })
-export class <%=Name%>Module {}
+export class <%=Names%>Module {}
